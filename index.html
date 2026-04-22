@@ -97,7 +97,7 @@
         const getClassColor = (cls) => {
           if (cls.title.includes('Youth') || cls.title.includes('Kids')) return 'bg-blue-50 border-blue-600 text-blue-900';
           if (cls.title === 'Intro to BJJ') return 'bg-green-50 border-green-600 text-green-900';
-          if (cls.title === 'Open Mat') return 'bg-gray-900 border-black text-gray-50';
+          if (cls.title === 'Open Mat' || cls.title === 'BJJ Laboratory') return 'bg-gray-900 border-black text-gray-50';
           
           switch (cls.type) {
             case 'BJJ': return 'bg-red-50 border-red-600 text-red-900';
