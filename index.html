@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Noon BJJ Schedule</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // --- SVGs for Icons ---
+        const CalendarIcon = ({ className }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+        );
+        const MapIcon = ({ className }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+        );
+        const UserIcon = ({ className }) => (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        );
+
+        // --- Data ---
+        const scheduleData = [
+          // MONDAY
+          { id: 30, day: 'Monday', title: 'Youth Sub Grappling', type: 'Grappling', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Tim Dawson', description: 'Submission Grappling (nogi) instruction for children ages 8 - 12 (exceptions on a case by case basis). High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
+          { id: 1, day: 'Monday', title: 'Intro to BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Coach Nick Coviello', description: 'Intro to BJJ. Students learn the fundamentals of BJJ via task-based games.' },
+          { id: 2, day: 'Monday', title: 'BJJ - All Levels', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn fundamental skills of BJJ through task-based gameplay and live sparring.' },
+          { id: 3, day: 'Monday', title: 'Judo - Executive', type: 'Judo', room: 'Downstairs', size: 'Large', start: '19:00', end: '20:00', coach: 'Sensei Heidi Holz', description: 'Introduction to Judo for older students of martial arts.' },
+          { id: 4, day: 'Monday', title: 'Sub Grappling - Int/Adv', type: 'Grappling', room: 'Upstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students sharpen the skills of nogi submission grappling through multi-stage, task-based gameplay and live sparring. Detailed feedback is provided for advanced students.' },
+          { id: 5, day: 'Monday', title: 'Grappling Skunkworks', type: 'Grappling', room: 'Upstairs', size: 'Small', start: '20:00', end: '21:00', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest.' },
+
+          // TUESDAY
+          { id: 31, day: 'Tuesday', title: 'Kids BJJ', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 4 - 8. High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
+          { id: 32, day: 'Tuesday', title: 'Youth BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 9 - 12. High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
+          { id: 6, day: 'Tuesday', title: 'Sub Grappling - All Levels', type: 'Grappling', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn fundamental skills of nogi submission grappling through task-based gameplay and live sparring.' },
+          { id: 36, day: 'Tuesday', title: 'Youth Judo', type: 'Judo', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Sensei Alex Painter', description: 'Judo instruction for children ages 6 - 12. High Noon coaches help students build character, coordination, confidence, and fitness through the lens of Judo.' },
+          { id: 7, day: 'Tuesday', title: 'BJJ - Int/Adv', type: 'BJJ', room: 'Downstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn advanced skills of BJJ through task-based gameplay and live sparring.' },
+          { id: 8, day: 'Tuesday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '20:00', end: '21:30', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
+          { id: 9, day: 'Tuesday', title: 'Grappling Skunkworks', type: 'Grappling', room: 'Upstairs', size: 'Small', start: '20:00', end: '21:00', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest.' },
+
+          // WEDNESDAY
+          { id: 33, day: 'Wednesday', title: 'Youth Sub Grappling', type: 'Grappling', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Tim Dawson', description: 'Submission Grappling (nogi) instruction for children ages 8 - 12 (exceptions on a case by case basis). High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
+          { id: 10, day: 'Wednesday', title: 'Intro to BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Coach Nick Coviello', description: 'Intro to BJJ. Students learn the fundamentals of BJJ via task-based games.' },
+          { id: 11, day: 'Wednesday', title: 'BJJ - All Levels', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Maia Matalon', description: 'Students of all levels learn fundamental skills of BJJ through task-based gameplay and live sparring.' },
+          { id: 12, day: 'Wednesday', title: 'Sub Grappling - Int/Adv', type: 'Grappling', room: 'Upstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students sharpen the skills of nogi submission grappling through multi-stage, task-based gameplay and live sparring. Detailed feedback is provided for advanced students.' },
+          { id: 13, day: 'Wednesday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '19:00', end: '20:00', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
+          { id: 14, day: 'Wednesday', title: 'Grappling Skunkworks', type: 'Grappling', room: 'Upstairs', size: 'Small', start: '20:00', end: '21:00', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest.' },
+
+          // THURSDAY
+          { id: 34, day: 'Thursday', title: 'Kids BJJ', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 4 - 8. High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
+          { id: 35, day: 'Thursday', title: 'Youth BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 9 - 12. High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
+          { id: 15, day: 'Thursday', title: 'Sub Grappling - All Levels', type: 'Grappling', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn fundamental skills of nogi submission grappling through task-based gameplay and live sparring.' },
+          { id: 16, day: 'Thursday', title: 'BJJ - Int/Adv', type: 'BJJ', room: 'Downstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn advanced skills of BJJ through task-based gameplay and live sparring.' },
+          { id: 17, day: 'Thursday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '20:00', end: '21:30', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
+          { id: 18, day: 'Thursday', title: 'Grappling Skunkworks', type: 'Grappling', room: 'Upstairs', size: 'Small', start: '20:00', end: '21:00', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest.' },
+
+          // FRIDAY
+          { id: 19, day: 'Friday', title: 'Early Bird BJJ', type: 'BJJ', room: 'Downstairs', size: 'Small', start: '05:00', end: '06:00', coach: 'Coach Brian Tran' },
+          { id: 20, day: 'Friday', title: 'Intro to BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Coach Nick Coviello', description: 'Intro to BJJ. Students learn the fundamentals of BJJ via task-based games.' },
+          { id: 21, day: 'Friday', title: 'Sub Grappling Lab', type: 'Grappling', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson' },
+          { id: 22, day: 'Friday', title: 'BJJ Laboratory', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Weekly open sparring session for students to hone their skills. Session consists of a warm up and 4 defensive focused rounds immediately followed by 4 fully open rounds.' },
+          { id: 23, day: 'Friday', title: 'Judo - Executive', type: 'Judo', room: 'Downstairs', size: 'Large', start: '19:00', end: '20:00', coach: 'Sensei Heidi Holz', description: 'Introduction to Judo for older students of martial arts.' },
+
+          // SATURDAY
+          { id: 24, day: 'Saturday', title: 'Judo - Advanced', type: 'Judo', room: 'Downstairs', size: 'Large', start: '10:00', end: '11:00', coach: 'Sensei Chris Round', description: 'Randori for advanced and competitive students. Green belt and above. Invite Only.' },
+          { id: 37, day: 'Saturday', title: 'Youth Judo', type: 'Judo', room: 'Upstairs', size: 'Small', start: '10:00', end: '11:00', coach: 'Sensei Alex Painter', description: 'Judo instruction for children ages 6 - 12. High Noon coaches help students build character, coordination, confidence, and fitness through the lens of Judo.' },
+          { id: 25, day: 'Saturday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '11:00', end: '12:00', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
+          { id: 26, day: 'Saturday', title: 'BJJ - Int/Adv', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '11:00', end: '12:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn advanced skills of BJJ through task-based gameplay and live sparring.' },
+          { id: 27, day: 'Saturday', title: 'Open Mat', type: 'BJJ', room: 'Downstairs', size: 'LARGE', start: '12:00', end: '14:00', coach: 'No Instructor', description: 'Community sparring session. All teams and affiliations welcome. No mat fee!' },
+
+          // SUNDAY
+          { id: 28, day: 'Sunday', title: 'Yoga for BJJ', type: 'Yoga', room: 'Upstairs', size: 'Small', start: '10:00', end: '11:00', coach: 'Coach Leah' },
+          { id: 29, day: 'Sunday', title: 'Sub Grappling - Comp', type: 'Grappling', room: 'Downstairs', size: 'Large', start: '17:00', end: '18:30', coach: 'Coach Tim Dawson', description: 'Community training session to prepare for high level submission grappling competition. High intensity.' },
+        ];
+
+        const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        const timeToDecimal = (timeStr) => {
+          const [hours, minutes] = timeStr.split(':').map(Number);
+          return hours + minutes / 60;
+        };
+
+        const formatTime = (timeStr) => {
+          let [hours, minutes] = timeStr.split(':').map(Number);
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          hours = hours % 12 || 12;
+          return `${hours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        };
+
+        const getClassColor = (cls) => {
+          if (cls.title.includes('Youth') || cls.title.includes('Kids')) return 'bg-blue-50 border-blue-600 text-blue-900';
+          if (cls.title === 'Intro to BJJ') return 'bg-green-50 border-green-600 text-green-900';
+          
+          switch (cls.type) {
+            case 'BJJ': return 'bg-red-50 border-red-600 text-red-900';
+            case 'Grappling': return 'bg-gray-200 border-gray-900 text-gray-900';
+            case 'Judo': return 'bg-white border-red-400 text-gray-800';
+            default: return 'bg-gray-900 border-black text-gray-50';
+          }
+        };
+
+        function App() {
+          const [filterRoom, setFilterRoom] = useState('All');
+          const [filterType, setFilterType] = useState('All');
+          const [selectedClass, setSelectedClass] = useState(null);
+
+          const filteredData = scheduleData.filter(
+            (item) => (filterRoom === 'All' || item.room === filterRoom) &&
+                      (filterType === 'All' || item.type === filterType)
+          );
+
+          return (
+            <div className="flex flex-col h-screen bg-gray-50 text-gray-800 font-sans">
+              <header className="bg-white shadow-sm border-b border-gray-200 p-4 shrink-0">
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-between items-center gap-4">
+                  <div>
+                    <h1 className="text-2xl font-bold flex items-center gap-2 text-gray-900">
+                      <CalendarIcon className="text-red-600 w-6 h-6" />
+                      High Noon BJJ Schedule
+                    </h1>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto overflow-x-auto pb-2 lg:pb-0">
+                    <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200 shrink-0">
+                      {['All', 'Downstairs', 'Upstairs'].map((room) => (
+                        <button
+                          key={room}
+                          onClick={() => setFilterRoom(room)}
+                          className={`whitespace-nowrap px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                            filterRoom === room
+                              ? 'bg-white shadow text-red-700'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          {room === 'All' ? 'Both Floors' : room}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex bg-gray-100 p-1 rounded-lg border border-gray-200 shrink-0">
+                      {['All', 'BJJ', 'Grappling', 'Judo', 'Yoga'].map((type) => (
+                        <button
+                          key={type}
+                          onClick={() => setFilterType(type)}
+                          className={`whitespace-nowrap px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                            filterType === type
+                              ? 'bg-white shadow text-red-700'
+                              : 'text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          {type === 'All' ? 'All Arts' : type}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </header>
+
+              <main className="flex-1 overflow-auto p-2 md:p-6">
+                <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col w-full">
+                  
+                  <div className="hidden md:flex border-b border-gray-200 bg-gray-50 rounded-t-xl sticky top-0 z-10">
+                    {DAYS.map((day) => (
+                      <div key={day} className="flex-1 text-center py-3 border-r border-gray-200 last:border-r-0 font-semibold text-gray-700">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col md:flex-row bg-gray-50/30 min-h-[500px]">
+                    {DAYS.map((day) => {
+                      const dayClasses = filteredData
+                        .filter((c) => c.day === day)
+                        .sort((a, b) => {
+                          const timeA = timeToDecimal(a.start);
+                          const timeB = timeToDecimal(b.start);
+                          if (timeA === timeB) {
+                            return a.room.localeCompare(b.room);
+                          }
+                          return timeA - timeB;
+                        });
+
+                      return (
+                        <div key={day} className="flex-1 border-b md:border-b-0 md:border-r border-gray-200 last:border-b-0 md:last:border-r-0 p-3 md:p-2 flex flex-col gap-2">
+                          <div className="md:hidden font-bold text-gray-800 py-1 mb-1 border-b border-gray-200 sticky top-0 bg-gray-50/90 backdrop-blur-sm z-10">
+                            {day}
+                          </div>
+                          {dayClasses.map((cls) => (
+                            <div
+                              key={cls.id}
+                              onClick={() => setSelectedClass(cls)}
+                              className={`relative border-l-4 rounded-r-md p-3 md:p-2.5 shadow-sm text-xs cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5 ${getClassColor(cls)}`}
+                            >
+                              <div className="font-bold leading-tight mb-1 text-sm md:text-xs">{cls.title}</div>
+                              <div className="text-[11px] md:text-[10px] opacity-80 font-medium mb-1.5">
+                                {formatTime(cls.start)} - {formatTime(cls.end)}
+                              </div>
+                              <div className="flex items-center gap-1 text-[11px] md:text-[10px] opacity-90">
+                                <MapIcon className="w-3 h-3 md:w-2.5 md:h-2.5" /> {cls.room}
+                              </div>
+                              {cls.coach !== 'No Instructor' && (
+                                <div className="flex items-center gap-1 text-[11px] md:text-[10px] opacity-90 mt-0.5 truncate">
+                                  <UserIcon className="w-3 h-3 md:w-2.5 md:h-2.5" /> {cls.coach}
+                                </div>
+                              )}
+                              {cls.description && (
+                                <div className="mt-1.5 text-[10px] md:text-[9px] opacity-80 italic line-clamp-2 leading-tight">
+                                  {cls.description}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                          {dayClasses.length === 0 && (
+                             <div className="text-gray-400 text-xs italic text-center py-4 md:hidden">No scheduled classes</div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </main>
+
+              {selectedClass && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+                  <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 relative">
+                    <button 
+                      onClick={() => setSelectedClass(null)}
+                      className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
+                    >
+                      ✕
+                    </button>
+                    <div className={`inline-block px-2 py-1 rounded text-xs font-semibold mb-3 ${getClassColor(selectedClass).split(' ')[0]} ${getClassColor(selectedClass).split(' ')[2]}`}>
+                      {selectedClass.type}
+                    </div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-1">{selectedClass.title}</h2>
+                    <p className="text-gray-500 text-sm mb-6 border-b pb-4">
+                      {selectedClass.day}s, {formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
+                    </p>
+                    
+                    {selectedClass.description && (
+                      <div className="mb-5 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        {selectedClass.description}
+                      </div>
+                    )}
+
+                    <div className="space-y-3 text-sm">
+                      <div className="flex items-center gap-3 text-gray-700">
+                        <div className="bg-gray-100 p-2 rounded-full">
+                          <MapIcon className="w-4 h-4 text-gray-600"/>
+                        </div>
+                        <div>
+                          <div className="font-semibold">Location</div>
+                          <div>{selectedClass.room}</div>
+                        </div>
+                      </div>
+                      {selectedClass.coach !== 'No Instructor' && (
+                        <div className="flex items-center gap-3 text-gray-700">
+                          <div className="bg-gray-100 p-2 rounded-full">
+                            <UserIcon className="w-4 h-4 text-gray-600"/>
+                          </div>
+                          <div>
+                            <div className="font-semibold">Instructor</div>
+                            <div>{selectedClass.coach}</div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <button 
+                      onClick={() => setSelectedClass(null)}
+                      className="mt-6 w-full bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                    >
+                      Close Details
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
