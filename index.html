@@ -14,7 +14,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
         // --- SVGs for Icons ---
         const CalendarIcon = ({ className }) => (
@@ -28,56 +28,11 @@
         );
 
         // --- Data ---
-        const scheduleData = [
-          // MONDAY
-          { id: 30, day: 'Monday', title: 'Youth Submission Grappling (nogi) - Advanced', type: 'Nogi', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Tim Dawson', description: 'Submission Grappling (nogi) instruction for children ages 8 - 12 (exceptions on a case by case basis). High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
-          { id: 1, day: 'Monday', title: 'Intro to BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Coach Nick Coviello', description: 'Intro to BJJ. Students learn the fundamentals of BJJ via task-based games.' },
-          { id: 2, day: 'Monday', title: 'BJJ - All Levels', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn fundamental skills of BJJ through task-based gameplay and live sparring.' },
-          { id: 3, day: 'Monday', title: 'Judo - Executive + All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '19:00', end: '20:00', coach: 'Sensei Heidi Holz', description: 'Introduction to Judo for older students of martial arts.' },
-          { id: 4, day: 'Monday', title: 'Submission Grappling (nogi) - Advanced', type: 'Nogi', room: 'Upstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students sharpen the skills of nogi submission grappling through multi-stage, task-based gameplay and live sparring. Detailed feedback is provided for advanced students.' },
-          { id: 5, day: 'Monday', title: 'Grappling Skunkworks - Leg Locks', type: 'Nogi', room: 'Upstairs', size: 'Small', start: '20:00', end: '20:30', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest. This session will be primarily focused on lower body submissions.' },
-
-          // TUESDAY
-          { id: 31, day: 'Tuesday', title: 'Kids BJJ', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 4-8. We help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring. Our little grapplers are split into two groups (ages 4-6 and 6-8) which are regularly adjusted based on age, size, and maturity level to ensure a positive experience.' },
-          { id: 32, day: 'Tuesday', title: 'Youth BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 9 - 12. High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
-          { id: 6, day: 'Tuesday', title: 'Submission Grappling (nogi) - All Levels', type: 'Nogi', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn fundamental skills of nogi submission grappling through task-based gameplay and live sparring.' },
-          { id: 36, day: 'Tuesday', title: 'Youth Judo', type: 'Judo', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Sensei Alex Painter', description: 'Judo instruction for children ages 7 - 12. High Noon coaches help students build character, coordination, confidence, and fitness through the lens of Judo.' },
-          { id: 7, day: 'Tuesday', title: 'BJJ - Advanced', type: 'BJJ', room: 'Downstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn advanced skills of BJJ through task-based gameplay and live sparring.' },
-          { id: 8, day: 'Tuesday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '20:00', end: '21:00', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
-          { id: 9, day: 'Tuesday', title: 'Grappling Skunkworks', type: 'Nogi', room: 'Upstairs', size: 'Small', start: '20:00', end: '20:30', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest.' },
-
-          // WEDNESDAY
-          { id: 33, day: 'Wednesday', title: 'Youth Submission Grappling (nogi) - Advanced', type: 'Nogi', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Tim Dawson', description: 'Submission Grappling (nogi) instruction for children ages 8 - 12 (exceptions on a case by case basis). High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
-          { id: 10, day: 'Wednesday', title: 'Intro to BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Coach Nick Coviello', description: 'Intro to BJJ. Students learn the fundamentals of BJJ via task-based games.' },
-          { id: 11, day: 'Wednesday', title: 'BJJ - All Levels', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Maia Matalon', description: 'Students of all levels learn fundamental skills of BJJ through task-based gameplay and live sparring.' },
-          { id: 12, day: 'Wednesday', title: 'Submission Grappling (nogi) - Advanced', type: 'Nogi', room: 'Upstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students sharpen the skills of nogi submission grappling through multi-stage, task-based gameplay and live sparring. Detailed feedback is provided for advanced students.' },
-          { id: 13, day: 'Wednesday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '19:00', end: '20:00', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
-          { id: 14, day: 'Wednesday', title: 'Grappling Skunkworks', type: 'Nogi', room: 'Upstairs', size: 'Small', start: '20:00', end: '20:30', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest.' },
-
-          // THURSDAY
-          { id: 34, day: 'Thursday', title: 'Kids BJJ', type: 'BJJ', room: 'Downstairs', size: 'Large', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 4-8. We help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring. Our little grapplers are split into two groups (ages 4-6 and 6-8) which are regularly adjusted based on age, size, and maturity level to ensure a positive experience.' },
-          { id: 35, day: 'Thursday', title: 'Youth BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '17:15', end: '18:00', coach: 'Coach Maia Matalon', description: 'Brazilian Jiu Jitsu instruction for children ages 9 - 12. High Noon coaches help students build physical capacity and technical prowess through task-based gameplay and age-appropriate live sparring.' },
-          { id: 15, day: 'Thursday', title: 'Submission Grappling (nogi) - All Levels', type: 'Nogi', room: 'Downstairs', size: 'Large', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn fundamental skills of nogi submission grappling through task-based gameplay and live sparring.' },
-          { id: 16, day: 'Thursday', title: 'BJJ - Advanced', type: 'BJJ', room: 'Downstairs', size: 'Med/Large', start: '19:00', end: '20:00', coach: 'Coach Tim Dawson', description: 'Students of all levels learn advanced skills of BJJ through task-based gameplay and live sparring.' },
-          { id: 17, day: 'Thursday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '20:00', end: '21:00', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
-          { id: 18, day: 'Thursday', title: 'Grappling Skunkworks', type: 'Nogi', room: 'Upstairs', size: 'Small', start: '20:00', end: '20:30', coach: 'Coach Tim Dawson', description: 'Open training time where students may spar, ask questions, or experiment with techniques of interest.' },
-
-          // FRIDAY
-          { id: 20, day: 'Friday', title: 'Intro to BJJ', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Coach Nick Coviello', description: 'Intro to BJJ. Students learn the fundamentals of BJJ via task-based games.' },
-          { id: 22, day: 'Friday', title: 'BJJ Laboratory', type: 'BJJ', room: 'Downstairs', size: 'Small', start: '18:00', end: '19:00', coach: 'Coach Tim Dawson', description: 'Weekly open sparring session for students to hone their skills. Session consists of a warm up and 8 consecutive 6 minute rounds. Open uniform.' },
-          { id: 23, day: 'Friday', title: 'Judo - Executive', type: 'Judo', room: 'Downstairs', size: 'Large', start: '19:00', end: '20:00', coach: 'Sensei Heidi Holz', description: 'Introduction to Judo for older students of martial arts.' },
-
-          // SATURDAY
-          { id: 24, day: 'Saturday', title: 'Judo - Advanced', type: 'Judo', room: 'Downstairs', size: 'Large', start: '10:00', end: '11:00', coach: 'Sensei Chris Round', description: 'Randori for advanced and competitive students. Green belt and above. Invite Only.' },
-          { id: 37, day: 'Saturday', title: 'Kids Judo', type: 'Judo', room: 'Upstairs', size: 'Small', start: '12:00', end: '13:00', coach: 'Sensei Alex Painter', description: 'Judo instruction for children ages 4 - 12. High Noon coaches help students build character, coordination, confidence, and fitness through the lens of Judo.' },
-          { id: 25, day: 'Saturday', title: 'Judo - All Levels', type: 'Judo', room: 'Downstairs', size: 'Large', start: '11:00', end: '12:00', coach: 'Sensei Chris Round', description: 'Students of all levels learn the skills of Judo and prepare for competition.' },
-          { id: 26, day: 'Saturday', title: 'BJJ - Advanced', type: 'BJJ', room: 'Upstairs', size: 'Small', start: '11:00', end: '12:00', coach: 'Coach Christian Bergara', description: 'Students of all levels learn advanced skills of BJJ through task-based gameplay and live sparring.' },
-          { id: 27, day: 'Saturday', title: 'Open Mat', type: 'BJJ', room: 'Downstairs', size: 'LARGE', start: '12:00', end: '14:00', coach: 'No Instructor', description: 'Community sparring session. Gi, nogi, and Judo. All teams and affiliations welcome. No mat fee!' },
-
-          // SUNDAY
-          { id: 28, day: 'Sunday', title: 'Yoga for BJJ', type: 'Yoga', room: 'Upstairs', size: 'Small', start: '10:00', end: '11:00', coach: 'Coach Leah' },
-          { id: 29, day: 'Sunday', title: 'Submission Grappling (nogi) - Competition', type: 'Nogi', room: 'Downstairs', size: 'Large', start: '11:00', end: '12:30', coach: 'Coach Tim Dawson', description: 'Community training session to prepare for high level submission grappling competition. High intensity.' },
-        ];
+        // Schedule data lives in schedule.json in this same repo and is fetched
+        // at runtime. Edit schedule.json to update class times, names, coaches,
+        // or descriptions — no need to touch this file. WordPress on
+        // highnoonbjj.com fetches the same JSON server-side so the schedule is
+        // crawlable for SEO.
 
         const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -97,7 +52,7 @@
           if (cls.title.includes('Youth') || cls.title.includes('Kids')) return 'bg-blue-50 border-blue-600 text-blue-900';
           if (cls.title === 'Intro to BJJ') return 'bg-green-50 border-green-600 text-green-900';
           if (cls.title === 'Open Mat' || cls.title === 'BJJ Laboratory') return 'bg-gray-900 border-black text-gray-50';
-          
+
           switch (cls.type) {
             case 'BJJ': return 'bg-red-50 border-red-600 text-red-900';
             case 'Nogi': return 'bg-gray-200 border-gray-900 text-gray-900';
@@ -109,6 +64,42 @@
         function App() {
           const [filterType, setFilterType] = useState('All');
           const [selectedClass, setSelectedClass] = useState(null);
+          const [scheduleData, setScheduleData] = useState([]);
+          const [loading, setLoading] = useState(true);
+          const [error, setError] = useState(null);
+
+          useEffect(() => {
+            fetch('./schedule.json', { cache: 'no-store' })
+              .then((r) => {
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+                return r.json();
+              })
+              .then((data) => {
+                setScheduleData(Array.isArray(data) ? data : data.classes || []);
+                setLoading(false);
+              })
+              .catch((err) => {
+                console.error('Failed to load schedule:', err);
+                setError(err.message);
+                setLoading(false);
+              });
+          }, []);
+
+          if (loading) {
+            return (
+              <div className="flex items-center justify-center h-screen text-gray-500 font-sans">
+                Loading schedule…
+              </div>
+            );
+          }
+
+          if (error) {
+            return (
+              <div className="flex items-center justify-center h-screen text-red-600 font-sans p-6 text-center">
+                Schedule couldn't load ({error}). Refresh, or contact the gym.
+              </div>
+            );
+          }
 
           const filteredData = scheduleData.filter(
             (item) => filterType === 'All' || item.type === filterType
@@ -146,7 +137,7 @@
 
               <main className="flex-1 overflow-auto p-2 md:p-6">
                 <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col w-full">
-                  
+
                   <div className="hidden md:flex border-b border-gray-200 bg-gray-50 rounded-t-xl sticky top-0 z-10">
                     {DAYS.map((day) => (
                       <div key={day} className="flex-1 text-center py-3 border-r border-gray-200 last:border-r-0 font-semibold text-gray-700">
@@ -211,7 +202,7 @@
               {selectedClass && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
                   <div className="bg-white rounded-xl shadow-xl max-w-sm w-full p-6 relative">
-                    <button 
+                    <button
                       onClick={() => setSelectedClass(null)}
                       className="absolute top-4 right-4 text-gray-400 hover:text-gray-700"
                     >
@@ -224,7 +215,7 @@
                     <p className="text-gray-500 text-sm mb-6 border-b pb-4">
                       {selectedClass.day}s, {formatTime(selectedClass.start)} - {formatTime(selectedClass.end)}
                     </p>
-                    
+
                     {selectedClass.description && (
                       <div className="mb-5 text-sm text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">
                         {selectedClass.description}
@@ -253,8 +244,8 @@
                         </div>
                       )}
                     </div>
-                    
-                    <button 
+
+                    <button
                       onClick={() => setSelectedClass(null)}
                       className="mt-6 w-full bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition-colors"
                     >
